@@ -1,1 +1,83 @@
+[
+  {
+    "id": 1,
+    "name": "Smart Phone",
+    "price": 1500,
+    "category": "Electronics",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "High performance phone for gaming and work."
+  },
+  {
+    "id": 2,
+    "name": "Charging Cord",
+    "price": 25,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 3,
+    "name": "Earphone",
+    "price": 500,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 4,
+    "name": "Wireless Mouse",
+    "price": 500,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 5,
+    "name": "Keyboard",
+    "price": 250,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 6,
+    "name": "Backup Charger",
+    "price": 500,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 7,
+    "name": "Phone Case",
+    "price": 50,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 8,
+    "name": "Power Outlet",
+    "price": 400,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 9,
+    "name": "Computer",
+    "price": 500,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+  {
+    "id": 10,
+    "name": "Laptop",
+    "price": 1000,
+    "category": "Accessories",
+    "imageUrl": "https://via.placeholder.com/150",
+    "description": "."
+  },
+]
 
