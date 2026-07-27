@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:8000', // FastAPI backend base URL
+  baseURL: 'https://shophub-api-8rdi.onrender.com',
   timeout: 10000,
 });
 

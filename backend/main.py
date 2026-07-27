@@ -1,14 +1,12 @@
 from fastapi import FastAPI
-from data.routers import products  #, users
 from fastapi.middleware.cors import CORSMiddleware
+
 from routers import auth
+from data.routers import products, orders, payments, admin_stats
 from database import engine
 from models.product import Base as ProductBase
 from models.user import Base as UserBase
-from data.routers import products, orders
 from models.order import Base as OrderBase
-from data.routers import products, orders, payments
-from data.routers import products, orders, payments, admin_stats
 
 app = FastAPI(title="ShopHub Product API", version="1.1.0")
 
@@ -17,15 +15,15 @@ UserBase.metadata.create_all(bind=engine)
 OrderBase.metadata.create_all(bind=engine)
 
 origins = [
-    "http://localhost:5173",  # Vite React dev
-    # add more allowed origins if needed
+    "http://localhost:5173",
+    "https://shophub.vercel.app",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
 
