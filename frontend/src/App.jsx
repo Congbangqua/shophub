@@ -9,7 +9,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminRoute from './routes/AdminRoutes';
 import PrivateRoute from './routes/PrivateRoute';
-import CartPage from './pages/Cartpage';
+import CartPage from './pages/CartPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
