@@ -16,7 +16,7 @@ OrderBase.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:5173",
-    "https://shophub.vercel.app",
+    "https://shophub-qs3z.vercel.app",
 ]
 
 app.add_middleware(
