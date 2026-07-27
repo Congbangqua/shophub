@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "name": "Laptop",
+        "price": 9.99,
+        "category": "beauty",
+        "description": "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects.",
+        "imageUrl": "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/1.png",
+        "stock": 50
+    },
+    {
+        "id": 2,
+        "name": "Eyeshadow Palette with Mirror",
+        "price": 19.99,
+        "category": "beauty",
+        "description": "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks.",
+        "imageUrl": "https://cdn.dummyjson.com/products/images/beauty/Eyeshadow%20Palette%20with%20Mirror/1.png",
+        "stock": 30
+    },
+    {
+        "id": 3,
+        "name": "Powder Canister",
+        "price": 14.99,
+        "category": "beauty",
+        "description": "The Powder Canister is a finely milled setting powder designed to set makeup and control shine.",
+        "imageUrl": "https://cdn.dummyjson.com/products/images/beauty/Powder%20Canister/1.png",
+        "stock": 25
+    },
+    {
+        "id": 4,
+        "name": "Red Lipstick",
+        "price": 12.99,
+        "category": "beauty",
+        "description": "A bold and vibrant red lipstick that provides long-lasting color and moisture.",
+        "imageUrl": "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/1.png",
+        "stock": 40
+    },
+    {
+        "id": 5,
+        "name": "Red Nail Polish",
+        "price": 8.99,
+        "category": "beauty",
+        "description": "A vibrant red nail polish with a glossy finish and long-lasting formula.",
+        "imageUrl": "https://cdn.dummyjson.com/products/images/beauty/Red%20Nail%20Polish/1.png",
+        "stock": 60
+    }
+]
