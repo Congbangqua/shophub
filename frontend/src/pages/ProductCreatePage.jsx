@@ -12,6 +12,8 @@ const ProductCreatePage = () => {
     description: '',
     imageUrl: productImages[0]?.path || '',
     stock: '',
+    hasDiscount: false,
+    discountPercent: 20,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -30,11 +32,15 @@ const ProductCreatePage = () => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleCheckboxChange = (e) => {
+  setForm((prev) => ({ ...prev, hasDiscount: e.target.checked }));
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+    
     try {
       const payload = {
         name: form.name,
@@ -43,6 +49,7 @@ const ProductCreatePage = () => {
         description: form.description,
         imageUrl: form.imageUrl,
         stock: parseInt(form.stock, 10),
+        discount_percent: form.hasDiscount ? parseInt(form.discountPercent, 10) : 0,
       };
       await productsApi.create(payload);
       navigate('/products');
@@ -152,7 +159,34 @@ const ProductCreatePage = () => {
             style={{ width: '100%', padding: '8px' }}
           />
         </div>
-
+        
+        <div style={{ marginBottom: '12px' }}>
+          <label>
+          <input
+            type="checkbox"
+            checked={form.hasDiscount}
+            onChange={handleCheckboxChange}
+          />{' '}
+          Apply discount
+          </label>
+      
+        {form.hasDiscount && (
+          <select
+            value={form.discountPercent}
+            onChange={(e) => setForm((prev) => ({ ...prev, discountPercent: e.target.value }))}
+            style={{ display: 'block', marginTop: '8px', padding: '8px' }}
+          >
+            <option value={20}>20%</option>
+            <option value={25}>25%</option>
+            <option value={30}>30%</option>
+            <option value={35}>35%</option>
+            <option value={40}>40%</option>
+            <option value={45}>45%</option>
+            <option value={50}>50%</option>
+          </select>
+        )}
+      </div>
+        
         <button type="submit" disabled={loading} style={{ padding: '8px 16px' }}>
           {loading ? 'Creating...' : 'Create Product'}
         </button>
