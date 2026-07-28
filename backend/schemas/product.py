@@ -10,6 +10,7 @@ class ProductBase(BaseModel):
 class ProductCreate(ProductBase):
     imageUrl: Optional[str] = None
     stock: int = Field(..., ge=0)
+    discount_percent: int = Field(0, ge=0, le=100)
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=3, max_length=100)
@@ -18,6 +19,7 @@ class ProductUpdate(BaseModel):
     description: Optional[str] = Field(None, min_length=5)
     imageUrl: Optional[str] = None
     stock: Optional[int] = Field(None, ge=0)
+    discount_percent: Optional[int] = Field(None, ge=0, le=100)
 
 class ProductRead(BaseModel):
     id: int
@@ -27,5 +29,7 @@ class ProductRead(BaseModel):
     description: str
     imageUrl: Optional[str] = None
     stock: int
+    discount_percent: int
+    discounted_price: float
 
     model_config = {"from_attributes": True}
