@@ -101,7 +101,6 @@ export const ProductDetail = () => {
   const outOfStock = product.stock <= 0;
   const hasDiscount = product.discount_percent > 0;
 
-  // ---- CHẾ ĐỘ CHỈNH SỬA (chỉ admin) ----
   if (editMode) {
     return (
       <section style={{ padding: '24px', maxWidth: '480px' }}>
@@ -235,7 +234,6 @@ export const ProductDetail = () => {
     );
   }
 
-  // ---- CHẾ ĐỘ XEM BÌNH THƯỜNG ----
   return (
     <section style={{ padding: '24px' }}>
       <Link to="/products" style={{ display: 'inline-block', marginBottom: '16px' }}>
