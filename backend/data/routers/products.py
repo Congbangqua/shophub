@@ -11,6 +11,8 @@ router = APIRouter(prefix="/products", tags=["products"])
 
 
 def map_product(p: ProductDB) -> ProductRead:
+    discount = p.discount_percent or 0
+    discounted_price = round(p.price * (1 - discount / 100), 2)
     return ProductRead(
         id=int(p.id),
         name=str(p.name),
@@ -19,6 +21,8 @@ def map_product(p: ProductDB) -> ProductRead:
         description=str(p.description),
         imageUrl=str(p.image_path) if p.image_path else None,
         stock=int(p.stock),
+        discount_percent=discount,
+        discounted_price=discounted_price,
     )
 
 
@@ -50,6 +54,7 @@ def create_product(payload: ProductCreate, db: Session = Depends(get_db)):
         description=payload.description,
         image_path=payload.imageUrl,
         stock=payload.stock,
+        discount_percent=payload.discount_percent,
     )
     db.add(new_product)
     db.commit()
@@ -75,6 +80,8 @@ def update_product(product_id: int, payload: ProductUpdate, db: Session = Depend
         product.image_path = payload.imageUrl
     if payload.stock is not None:
         product.stock = payload.stock
+    if payload.discount_percent is not None:
+        product.discount_percent = payload.discount_percent
 
     db.commit()
     db.refresh(product)
