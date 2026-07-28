@@ -11,7 +11,9 @@ export const ProductList = ({ products, onDelete }) => {
           price={product.price}
           category={product.category}
           imageUrl={product.imageUrl}
-          warranty={product.warranty}
+          stock={product.stock}
+          discount_percent={product.discount_percent}
+          discounted_price={product.discounted_price}
           onDelete={onDelete}
         />
       ))}
