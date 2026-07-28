@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productsApi } from '../api/productsApi';
 import { useAuth } from '../auth/useAuth';
+import { productImages } from '../data/productImages';
 
 const ProductCreatePage = () => {
   const [form, setForm] = useState({
@@ -9,16 +10,14 @@ const ProductCreatePage = () => {
     price: '',
     category: '',
     description: '',
-    imageUrl: '',
+    imageUrl: productImages[0]?.path || '',
     stock: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { role } = useAuth();
-  
 
-  // Bảo vệ route: nếu không phải admin thì không cho vào
   if (role !== 'Admin') {
     return (
       <section style={{ padding: '24px' }}>
@@ -107,15 +106,39 @@ const ProductCreatePage = () => {
         </div>
 
         <div style={{ marginBottom: '12px' }}>
-          <label>Image URL</label>
-          <input
-            type="text"
+          <label>Product Image</label>
+          <select
             name="imageUrl"
             value={form.imageUrl}
             onChange={handleChange}
             style={{ width: '100%', padding: '8px' }}
-          />
+          >
+            {productImages.length === 0 && (
+              <option value="">No images available</option>
+            )}
+            {productImages.map((img) => (
+              <option key={img.path} value={img.path}>
+                {img.label}
+              </option>
+            ))}
+          </select>
+
+          {form.imageUrl && (
+            <img
+              src={form.imageUrl}
+              alt="Preview"
+              style={{
+                marginTop: '8px',
+                width: '120px',
+                height: '120px',
+                objectFit: 'cover',
+                borderRadius: '4px',
+                border: '1px solid #ddd',
+              }}
+            />
+          )}
         </div>
+
         <div style={{ marginBottom: '12px' }}>
           <label>Stock Quantity</label>
           <input
@@ -129,6 +152,7 @@ const ProductCreatePage = () => {
             style={{ width: '100%', padding: '8px' }}
           />
         </div>
+
         <button type="submit" disabled={loading} style={{ padding: '8px 16px' }}>
           {loading ? 'Creating...' : 'Create Product'}
         </button>
