@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const axiosClient = axios.create({
   baseURL: 'https://shophub-api-8rdi.onrender.com',
-  timeout: 10000,
+  timeout: 60000,
 });
 
 axiosClient.interceptors.response.use(
