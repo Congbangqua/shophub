@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { ProductList } from '../components/ProductList';
 import { useAuth } from '../auth/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { productsApi } from '../api/productsApi';
 
 export const ProductPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category') || 'All';
+
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [sortOption, setSortOption] = useState('none');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,6 +37,10 @@ export const ProductPage = () => {
   }, []);
 
   useEffect(() => {
+    setSelectedCategory(categoryFromUrl);
+  }, [categoryFromUrl]);
+
+  useEffect(() => {
     let updated = [...products];
 
     if (searchTerm.trim() !== '') {
@@ -54,6 +61,15 @@ export const ProductPage = () => {
     setFilteredProducts(updated);
   }, [searchTerm, selectedCategory, sortOption, products]);
 
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    if (value === 'All') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category: value });
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
@@ -61,7 +77,7 @@ export const ProductPage = () => {
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
       const message = err.response?.data?.detail || 'Failed to delete product.';
-    alert(message);
+      alert(message);
     }
   };
 
@@ -109,7 +125,7 @@ export const ProductPage = () => {
 
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={(e) => handleCategoryChange(e.target.value)}
           style={{ padding: '8px' }}
         >
           {categories.map((cat) => (
@@ -132,7 +148,7 @@ export const ProductPage = () => {
         <button
           onClick={() => {
             setSearchTerm('');
-            setSelectedCategory('All');
+            handleCategoryChange('All');
             setSortOption('none');
           }}
           style={{
