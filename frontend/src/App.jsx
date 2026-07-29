@@ -27,7 +27,6 @@ function App() {
 
   return (
     <>
-      <section id="center"><h1>ShopHUB</h1></section>
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
