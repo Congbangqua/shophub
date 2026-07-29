@@ -9,4 +9,10 @@ export const productImages = [
   { label: 'iPhone 17', path: '/images/iphone17.jpg' },
   { label: 'iPhone 17pro', path: '/images/iphone17pro.jpg' },
   { label: 'iPhone 17promax', path: '/images/iphone17promax.jpg' },
+  { label: 'DellXPS 13', path: '/images/dellxps13.jpg' },
+  { label: 'DellXPS 14', path: '/images/dellxps14.jpg' },
+  { label: 'DellXPS 16', path: '/images/dellxps16.jpg' },
+  { label: 'Macbook pro', path: '/images/macbookpro.jpg' },
+  { label: 'Macbook air m5', path: '/images/macbookairm5.jpg' },
+  { label: 'Macbook NEO', path: '/images/macbookNEO.jpg' },
 ];
