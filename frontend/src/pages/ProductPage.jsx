@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { ProductList } from '../components/ProductList';
 import { useAuth } from '../auth/useAuth';
@@ -17,7 +16,6 @@ export const ProductPage = () => {
   const isAdmin = role === 'Admin';
   const navigate = useNavigate();
 
-  // Fetch products từ API thật
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -91,8 +89,6 @@ export const ProductPage = () => {
           + Create Product
         </button>
       )}
-
-      <p>Search, filter, and sort products.</p>
 
       <div
         style={{
