@@ -89,7 +89,6 @@ def create_stripe_session(
             line_items=line_items,
             success_url=f"{STRIPE_SUCCESS_URL}?order_id={order.id}",
             cancel_url=f"{STRIPE_CANCEL_URL}?order_id={order.id}",
-            timeout=10,
         )
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
