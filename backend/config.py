@@ -18,4 +18,3 @@ VNPAY_HASH_SECRET = os.getenv("VNPAY_HASH_SECRET")
 VNPAY_RETURN_URL = os.getenv("VNPAY_RETURN_URL", "http://localhost:5173/payment/vnpay/success")
 VNPAY_BASE_URL = os.getenv("VNPAY_BASE_URL", "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html")
 USD_TO_VND_RATE = 25000
-USD_TO_VND_RATE = 25000
