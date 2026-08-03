@@ -21,7 +21,7 @@ def calculate_shipping_fee(
         "to_ward_code": to_ward_code,
         "weight": weight,
         "insurance_value": insurance_value,
-        "service_type_id": 2,  # dịch vụ chuẩn của GHN sandbox
+        "service_type_id": 2,
     }
 
     response = httpx.post(
