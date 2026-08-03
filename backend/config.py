@@ -18,3 +18,7 @@ VNPAY_HASH_SECRET = os.getenv("VNPAY_HASH_SECRET")
 VNPAY_RETURN_URL = os.getenv("VNPAY_RETURN_URL", "http://localhost:5173/payment/vnpay/success")
 VNPAY_BASE_URL = os.getenv("VNPAY_BASE_URL", "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html")
 USD_TO_VND_RATE = 25000
+
+GHN_API_URL = os.getenv("GHN_API_URL", "https://dev-online-gateway.ghn.vn/shiip/public-api")
+GHN_API_TOKEN = os.getenv("GHN_API_TOKEN")
+GHN_SHOP_ID = os.getenv("GHN_SHOP_ID")
