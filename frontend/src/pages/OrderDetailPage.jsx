@@ -29,7 +29,6 @@ const OrderDetailPage = () => {
 
   useEffect(() => {
     fetchOrder();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleStatusChange = async (e) => {
