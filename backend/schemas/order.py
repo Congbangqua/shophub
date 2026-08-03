@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import List
+from typing import List, Optional
 
 class OrderItemCreate(BaseModel):
     product_id: int
@@ -9,6 +9,13 @@ class OrderItemCreate(BaseModel):
 
 class CheckoutRequest(BaseModel):
     items: List[OrderItemCreate]
+    shipping_provider: str = Field(..., pattern="^(IN_HOUSE|GHN)$")
+    shipping_fee: float = Field(..., ge=0)
+    to_name: Optional[str] = None
+    to_phone: Optional[str] = None
+    to_address: Optional[str] = None
+    to_district_id: Optional[int] = None
+    to_ward_code: Optional[str] = None
 
 class OrderItemRead(BaseModel):
     id: int
@@ -26,6 +33,10 @@ class OrderRead(BaseModel):
     status: str
     total_amount: float
     created_at: str
+    shipping_provider: str
+    tracking_code: Optional[str] = None
+    shipping_fee: float
+    shipper_id: Optional[int] = None
     items: List[OrderItemRead]
 
     class Config:
@@ -36,12 +47,18 @@ class OrderSummary(BaseModel):
     status: str
     total_amount: float
     created_at: str
+    shipping_provider: str
+    tracking_code: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 
-ALLOWED_STATUSES = ["PLACED", "PROCESSING", "SHIPPED", "COMPLETED", "CANCELED"]
+ALLOWED_STATUSES = ["PROCESSING", "SHIPPING", "DELIVERED", "CANCELED", "FAILED"]
+SHIPPER_ALLOWED_TRANSITIONS = {
+    "PROCESSING": ["SHIPPING"],
+    "SHIPPING": ["DELIVERED", "FAILED"],
+}
 
 class OrderStatusUpdate(BaseModel):
     status: str
