@@ -60,10 +60,7 @@ def checkout_order(
 
         product = db.query(ProductDB).filter(ProductDB.id == item.product_id).first()
         if not product:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Product '{item.name}' not found",
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Product '{item.name}' not found")
         if product.stock < item.quantity:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -73,8 +70,37 @@ def checkout_order(
         products_to_update.append((product, item.quantity))
         total_amount += item.price * item.quantity
 
+    tracking_code = None
+    if payload.shipping_provider == "GHN":
+        if not all([payload.to_name, payload.to_phone, payload.to_address,
+                    payload.to_district_id, payload.to_ward_code]):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing shipping address for GHN",
+            )
+        ghn_items = [
+            {"name": item.name, "quantity": item.quantity}
+            for item in payload.items
+        ]
+        tracking_code = create_ghn_order(
+            to_name=payload.to_name,
+            to_phone=payload.to_phone,
+            to_address=payload.to_address,
+            to_district_id=payload.to_district_id,
+            to_ward_code=payload.to_ward_code,
+            items=ghn_items,
+            weight=sum(item.quantity for item in payload.items) * 200,  # ước lượng 200g/món
+        )
+
     try:
-        order = OrderDB(user_id=user.id, status="PLACED", total_amount=total_amount)
+        order = OrderDB(
+            user_id=user.id,
+            status="PLACED",
+            total_amount=total_amount + payload.shipping_fee,
+            shipping_provider=payload.shipping_provider,
+            shipping_fee=payload.shipping_fee,
+            tracking_code=tracking_code,
+        )
         db.add(order)
         db.flush()
 
