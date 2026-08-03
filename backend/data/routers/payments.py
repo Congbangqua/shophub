@@ -244,33 +244,3 @@ def get_shipper_queue(db: Session = Depends(get_db), user=Depends(require_shippe
         )
         for o in orders
     ]
-
-
-@router.patch("/{order_id}/shipper-status", response_model=OrderRead)
-def shipper_update_status(
-    order_id: int,
-    payload: OrderStatusUpdate,
-    db: Session = Depends(get_db),
-    user=Depends(require_shipper),
-):
-    order = db.query(OrderDB).filter(OrderDB.id == order_id).first()
-    if not order:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
-
-    if order.shipping_provider != "IN_HOUSE":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not an in-house order")
-
-    allowed_next = SHIPPER_ALLOWED_TRANSITIONS.get(order.status, [])
-    if payload.status not in allowed_next:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cannot transition from {order.status} to {payload.status}",
-        )
-
-    order.status = payload.status
-    if order.status == "SHIPPING":
-        order.shipper_id = user.id
-
-    db.commit()
-    db.refresh(order)
-    return _to_order_read(order)
