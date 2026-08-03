@@ -68,8 +68,8 @@ def create_stripe_session(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status == "PAID":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid")
+    if order.status !== "PLACED":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     line_items = [
         {
@@ -109,8 +109,8 @@ def create_paypal_order(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status == "PAID":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid")
+    if order.status !== "PLACED":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     access_token = get_paypal_access_token()
 
@@ -174,8 +174,8 @@ def create_vnpay_url(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status == "PAID":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid")
+    if order.status !== "PLACED":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     amount_vnd = order.total_amount * USD_TO_VND_RATE
 
@@ -221,8 +221,56 @@ def confirm_payment(
                 detail="PayPal payment was not completed",
             )
 
-    order.status = "PAID"
+    order.status = "PROCESSING"
     db.commit()
     db.refresh(order)
 
     return {"id": order.id, "status": order.status}
+
+@router.get("/shipper/queue", response_model=List[OrderSummary])
+def get_shipper_queue(db: Session = Depends(get_db), user=Depends(require_shipper)):
+    orders = (
+        db.query(OrderDB)
+        .filter(OrderDB.shipping_provider == "IN_HOUSE")
+        .filter(OrderDB.status == "PROCESSING")
+        .order_by(desc(OrderDB.created_at))
+        .all()
+    )
+    return [
+        OrderSummary(
+            id=o.id, status=o.status, total_amount=o.total_amount,
+            created_at=str(o.created_at), shipping_provider=o.shipping_provider,
+            tracking_code=o.tracking_code,
+        )
+        for o in orders
+    ]
+
+
+@router.patch("/{order_id}/shipper-status", response_model=OrderRead)
+def shipper_update_status(
+    order_id: int,
+    payload: OrderStatusUpdate,
+    db: Session = Depends(get_db),
+    user=Depends(require_shipper),
+):
+    order = db.query(OrderDB).filter(OrderDB.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+
+    if order.shipping_provider != "IN_HOUSE":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not an in-house order")
+
+    allowed_next = SHIPPER_ALLOWED_TRANSITIONS.get(order.status, [])
+    if payload.status not in allowed_next:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot transition from {order.status} to {payload.status}",
+        )
+
+    order.status = payload.status
+    if order.status == "SHIPPING":
+        order.shipper_id = user.id
+
+    db.commit()
+    db.refresh(order)
+    return _to_order_read(order)
