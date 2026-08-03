@@ -38,3 +38,11 @@ def require_admin(user: UserDB = Depends(get_current_user)) -> UserDB:
             detail="Admin privileges required",
         )
     return user
+
+def require_shipper(user: UserDB = Depends(get_current_user)) -> UserDB:
+    if user.role != "Shipper":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Shipper privileges required",
+        )
+    return user
