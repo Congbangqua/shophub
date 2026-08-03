@@ -44,6 +44,7 @@ const OrderHistoryPage = () => {
             <th align="left">Order #</th>
             <th align="center">Status</th>
             <th align="center">Total</th>
+            <th align="center">Shipping</th>
             <th align="center">Date</th>
             <th align="center">Details</th>
           </tr>
@@ -54,6 +55,7 @@ const OrderHistoryPage = () => {
               <td>#{o.id}</td>
               <td align="center">{o.status}</td>
               <td align="center">${o.total_amount.toFixed(2)}</td>
+              <td align="center">{o.shipping_provider === 'GHN' ? `GHN: ${o.tracking_code || '...'}` : 'Đội xe ShopHub'}</td>
               <td align="center">{new Date(o.created_at).toLocaleString()}</td>
               <td align="center">
                 <Link to={`/orders/${o.id}`}>View</Link>
