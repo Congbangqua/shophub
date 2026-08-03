@@ -103,6 +103,21 @@ const Header = () => {
                   Admin Dashboard
                 </Link>
               )}
+                {role === 'Shipper' && (
+                <Link
+                  to="/shipper/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '10px 16px',
+                    textDecoration: 'none',
+                    color: '#000',
+                    borderBottom: '1px solid #eee',
+                  }}
+                >
+                  Shipper Dashboard
+                </Link>
+              )}
                 <Link
                   to="/orders"
                   onClick={() => setMenuOpen(false)}
