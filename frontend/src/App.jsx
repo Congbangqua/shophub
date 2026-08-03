@@ -21,6 +21,8 @@ import PaypalSuccessPage from './pages/PaypalSuccessPage';
 import PaypalCancelPage from './pages/PaypalCancelPage';
 import VnpaySuccessPage from './pages/VnpaySuccessPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import ShipperRoute from './routes/ShipperRoute';
+import ShipperDashboardPage from './pages/ShipperDashboardPage';  
 
 function App() {
   const [count, setCount] = useState(0);
@@ -35,6 +37,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/cart" element={<CartPage />} />
+       
+        <Route element={<ShipperRoute />}>
+          <Route path="/shipper/dashboard" element={<ShipperDashboardPage />} />
+        </Route>
 
         <Route element={<PrivateRoute />}>
           <Route path="/orders" element={<OrderHistoryPage />} />
