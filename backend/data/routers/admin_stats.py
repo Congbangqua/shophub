@@ -19,7 +19,7 @@ def get_overview(db: Session = Depends(get_db)):
     total_orders = db.query(func.count(OrderDB.id)).scalar() or 0
     total_revenue = (
         db.query(func.sum(OrderDB.total_amount))
-        .filter(OrderDB.status == "PAID")
+        .filter(OrderDB.status.in_(["PROCESSING", "SHIPPING", "DELIVERED"]))
         .scalar()
         or 0.0
     )
@@ -41,7 +41,7 @@ def get_monthly_revenue(db: Session = Depends(get_db)):
 
     results = (
         db.query(month_expr, func.sum(OrderDB.total_amount).label("revenue"))
-        .filter(OrderDB.status == "PAID")
+        .filter(OrderDB.status.in_(["PROCESSING", "SHIPPING", "DELIVERED"]))
         .filter(OrderDB.created_at >= cutoff)
         .group_by(month_expr)
         .order_by(month_expr)
