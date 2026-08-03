@@ -7,14 +7,25 @@ function authHeaders() {
 }
 
 export const ordersApi = {
-  async checkout(cartItems) {
+  async checkout({ items, shippingProvider, shippingFee, address }) {
     const payload = {
-      items: cartItems.map((item) => ({
+      items: items.map((item) => ({
         product_id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
       })),
+      shipping_provider: shippingProvider,
+      shipping_fee: shippingFee,
+      ...(shippingProvider === 'GHN'
+        ? {
+            to_name: address.to_name,
+            to_phone: address.to_phone,
+            to_address: address.to_address,
+            to_district_id: address.to_district_id,
+            to_ward_code: address.to_ward_code,
+          }
+        : {}),
     };
     const response = await axiosClient.post('/orders/checkout', payload, {
       headers: authHeaders(),
