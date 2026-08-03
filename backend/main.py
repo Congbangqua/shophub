@@ -7,6 +7,7 @@ from database import engine
 from models.product import Base as ProductBase
 from models.user import Base as UserBase
 from models.order import Base as OrderBase
+from data.routers import products, orders, payments, admin_stats, shipping
 
 app = FastAPI(title="ShopHub Product API", version="1.1.0")
 
@@ -32,3 +33,4 @@ app.include_router(auth.router)
 app.include_router(orders.router)
 app.include_router(payments.router)
 app.include_router(admin_stats.router)
+app.include_router(shipping.router)
