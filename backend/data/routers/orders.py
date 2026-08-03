@@ -14,9 +14,9 @@ from schemas.order import (
     OrderItemQuantityUpdate,
 )
 from auth.deps import get_current_user, require_admin
+from services.ghn_service import create_ghn_order
 
 router = APIRouter(prefix="/orders", tags=["orders"])
-
 
 def _to_order_read(order: OrderDB) -> OrderRead:
     return OrderRead(
@@ -24,6 +24,10 @@ def _to_order_read(order: OrderDB) -> OrderRead:
         status=order.status,
         total_amount=order.total_amount,
         created_at=str(order.created_at),
+        shipping_provider=order.shipping_provider,
+        tracking_code=order.tracking_code,
+        shipping_fee=order.shipping_fee,
+        shipper_id=order.shipper_id,
         items=[
             OrderItemRead(
                 id=oi.id,
