@@ -15,6 +15,8 @@ from schemas.order import (
 )
 from auth.deps import get_current_user, require_admin
 from services.ghn_service import create_ghn_order
+from schemas.order import SHIPPER_ALLOWED_TRANSITIONS
+from auth.deps import require_shipper
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
@@ -190,6 +192,36 @@ def admin_update_order_item_quantity(order_id: int, payload: OrderItemQuantityUp
     item.quantity = payload.quantity
     item.line_total = item.quantity * item.product_price
     order.total_amount = sum(oi.line_total for oi in order.items)
+
+    db.commit()
+    db.refresh(order)
+    return _to_order_read(order)
+
+
+@router.patch("/{order_id}/shipper-status", response_model=OrderRead)
+def shipper_update_status(
+    order_id: int,
+    payload: OrderStatusUpdate,
+    db: Session = Depends(get_db),
+    user=Depends(require_shipper),
+):
+    order = db.query(OrderDB).filter(OrderDB.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+
+    if order.shipping_provider != "IN_HOUSE":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not an in-house order")
+
+    allowed_next = SHIPPER_ALLOWED_TRANSITIONS.get(order.status, [])
+    if payload.status not in allowed_next:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot transition from {order.status} to {payload.status}",
+        )
+
+    order.status = payload.status
+    if order.status == "SHIPPING":
+        order.shipper_id = user.id
 
     db.commit()
     db.refresh(order)
