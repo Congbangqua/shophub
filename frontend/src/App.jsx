@@ -41,6 +41,7 @@ function App() {
        
         <Route element={<ShipperRoute />}>
           <Route path="/shipper/dashboard" element={<ShipperDashboardPage />} />
+          <Route path="/shipper/history" element={<ShipperHistoryPage />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
