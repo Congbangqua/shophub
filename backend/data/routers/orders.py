@@ -43,6 +43,16 @@ def _to_order_read(order: OrderDB) -> OrderRead:
         ],
     )
 
+def _to_order_summary(order: OrderDB) -> OrderSummary:
+    return OrderSummary(
+        id=order.id,
+        status=order.status,
+        total_amount=order.total_amount,
+        created_at=str(order.created_at),
+        shipping_provider=order.shipping_provider,
+        tracking_code=order.tracking_code,
+        customer_email=order.user.email if order.user else None,
+    )
 
 @router.post("/checkout", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
 def checkout_order(
@@ -136,21 +146,23 @@ def get_my_orders(db: Session = Depends(get_db), user=Depends(get_current_user))
         .order_by(desc(OrderDB.created_at))
         .all()
     )
-    return [
-        OrderSummary(id=o.id, status=o.status, total_amount=o.total_amount, created_at=str(o.created_at))
-        for o in orders
-    ]
+    return [_to_order_summary(o) for o in orders]
 
 
-# Route cụ thể /admin/all phải khai báo TRƯỚC /{order_id}, nếu không FastAPI sẽ hiểu "admin" là order_id
 @router.get("/admin/all", response_model=List[OrderSummary], dependencies=[Depends(require_admin)])
 def get_all_orders_for_admin(db: Session = Depends(get_db)):
     orders = db.query(OrderDB).order_by(desc(OrderDB.created_at)).all()
-    return [
-        OrderSummary(id=o.id, status=o.status, total_amount=o.total_amount, created_at=str(o.created_at))
-        for o in orders
-    ]
+    return [_to_order_summary(o) for o in orders]
 
+@router.get("/shipper/history", response_model=List[OrderSummary])
+def get_shipper_history(db: Session = Depends(get_db), user=Depends(require_shipper)):
+    orders = (
+        db.query(OrderDB)
+        .filter(OrderDB.shipper_id == user.id)
+        .order_by(desc(OrderDB.created_at))
+        .all()
+    )
+    return [_to_order_summary(o) for o in orders]
 
 @router.get("/{order_id}", response_model=OrderRead)
 def get_order_by_id(order_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
@@ -158,9 +170,12 @@ def get_order_by_id(order_id: int, db: Session = Depends(get_db), user=Depends(g
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
 
-    if order.user_id != user.id and user.role != "Admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
+    is_owner = order.user_id == user.id
+    is_admin = user.role == "Admin"
+    is_assigned_shipper = user.role == "Shipper" and order.shipper_id == user.id
 
+    if not (is_owner or is_admin or is_assigned_shipper):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
     return _to_order_read(order)
 
 
