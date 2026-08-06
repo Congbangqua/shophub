@@ -68,7 +68,7 @@ def create_stripe_session(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status !== "PLACED":
+    if order.status != "PLACED":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     line_items = [
@@ -109,7 +109,7 @@ def create_paypal_order(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status !== "PLACED":
+    if order.status != "PLACED":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     access_token = get_paypal_access_token()
@@ -174,7 +174,7 @@ def create_vnpay_url(
     if order.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    if order.status !== "PLACED":
+    if order.status != "PLACED":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order already paid or processed")
 
     amount_vnd = order.total_amount * USD_TO_VND_RATE
