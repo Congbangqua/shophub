@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ordersApi } from '../api/ordersApi';
 import { useAuth } from '../auth/useAuth';
 
-const ALLOWED_STATUSES = ['PLACED', 'PROCESSING', 'SHIPPED', 'COMPLETED', 'CANCELED'];
+const ALLOWED_STATUSES = ['PROCESSING', 'SHIPPING', 'DELIVERED', 'CANCELED', 'FAILED'];
 
 const OrderDetailPage = () => {
   const { id } = useParams();
@@ -94,10 +94,10 @@ const OrderDetailPage = () => {
         )}
       </p>
       {order.shipping_fee > 0 && <p>Phí ship: {order.shipping_fee.toLocaleString()} VND</p>}
-      {order.status !== 'PAID' && !isAdmin && (
-      <p>
-        <Link to={`/orders/${order.id}/payment`}>Pay Now</Link>
-      </p>
+      {order.status === 'PLACED' && !isAdmin && (
+        <p>
+          <Link to={`/orders/${order.id}/payment`}>Pay Now</Link>
+        </p>
       )}
       <p>Date: {new Date(order.created_at).toLocaleString()}</p>
 
