@@ -227,20 +227,3 @@ def confirm_payment(
 
     return {"id": order.id, "status": order.status}
 
-@router.get("/shipper/queue", response_model=List[OrderSummary])
-def get_shipper_queue(db: Session = Depends(get_db), user=Depends(require_shipper)):
-    orders = (
-        db.query(OrderDB)
-        .filter(OrderDB.shipping_provider == "IN_HOUSE")
-        .filter(OrderDB.status == "PROCESSING")
-        .order_by(desc(OrderDB.created_at))
-        .all()
-    )
-    return [
-        OrderSummary(
-            id=o.id, status=o.status, total_amount=o.total_amount,
-            created_at=str(o.created_at), shipping_provider=o.shipping_provider,
-            tracking_code=o.tracking_code,
-        )
-        for o in orders
-    ]
