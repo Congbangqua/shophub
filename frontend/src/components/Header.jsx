@@ -118,6 +118,45 @@ const Header = () => {
                   Shipper Dashboard
                 </Link>
               )}
+
+                {role === 'Shipper' && (
+              <>
+                <Link
+                  to="/shipper/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                >
+                  Shipper Dashboard
+                </Link>
+                <Link
+                  to="/shipper/history"
+                  onClick={() => setMenuOpen(false)}
+                  style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                >
+                  Delivery History
+                </Link>
+              </>
+            )}
+
+                  {role === 'Admin' && (
+                    <>
+                      <Link
+                        to="/admin/orders"
+                        onClick={() => setMenuOpen(false)}
+                        style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                      >
+                        All Orders (Admin)
+                      </Link>
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setMenuOpen(false)}
+                        style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    </>
+                  )}
+                
                 <Link
                   to="/orders"
                   onClick={() => setMenuOpen(false)}
