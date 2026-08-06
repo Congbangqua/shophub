@@ -36,6 +36,7 @@ const AdminOrdersPage = () => {
           <thead>
             <tr>
               <th align="left">Order #</th>
+              <th align="left">Customer</th>
               <th align="center">Status</th>
               <th align="center">Total</th>
               <th align="center">Date</th>
@@ -46,6 +47,7 @@ const AdminOrdersPage = () => {
             {orders.map((o) => (
               <tr key={o.id} style={{ borderBottom: '1px solid #eee' }}>
                 <td>#{o.id}</td>
+                <td>{o.customer_email}</td>
                 <td align="center">{o.status}</td>
                 <td align="center">${o.total_amount.toFixed(2)}</td>
                 <td align="center">{new Date(o.created_at).toLocaleString()}</td>
