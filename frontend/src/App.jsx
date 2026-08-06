@@ -22,7 +22,8 @@ import PaypalCancelPage from './pages/PaypalCancelPage';
 import VnpaySuccessPage from './pages/VnpaySuccessPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import ShipperRoute from './routes/ShipperRoute';
-import ShipperDashboardPage from './pages/ShipperDashboardPage';  
+import ShipperDashboardPage from './pages/ShipperDashboardPage';
+import ShipperHistoryPage from './pages/ShipperHistoryPage';
 
 function App() {
   const [count, setCount] = useState(0);
