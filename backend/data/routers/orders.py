@@ -12,8 +12,9 @@ from schemas.order import (
     OrderSummary,
     OrderStatusUpdate,
     OrderItemQuantityUpdate,
+    SHIPPER_ALLOWED_TRANSITIONS,
 )
-from auth.deps import get_current_user, require_admin
+from auth.deps import get_current_user, require_admin, require_shipper
 from services.ghn_service import create_ghn_order
 from schemas.order import SHIPPER_ALLOWED_TRANSITIONS
 from auth.deps import require_shipper
@@ -163,6 +164,24 @@ def get_shipper_history(db: Session = Depends(get_db), user=Depends(require_ship
         .all()
     )
     return [_to_order_summary(o) for o in orders]
+
+@router.get("/shipper/queue", response_model=List[OrderSummary])
+def get_shipper_queue(db: Session = Depends(get_db), user=Depends(require_shipper)):
+    orders = (
+        db.query(OrderDB)
+        .filter(OrderDB.shipping_provider == "IN_HOUSE")
+        .filter(OrderDB.status == "PROCESSING")
+        .order_by(desc(OrderDB.created_at))
+        .all()
+    )
+    return [
+        OrderSummary(
+            id=o.id, status=o.status, total_amount=o.total_amount,
+            created_at=str(o.created_at), shipping_provider=o.shipping_provider,
+            tracking_code=o.tracking_code,
+        )
+        for o in orders
+    ]
 
 @router.get("/{order_id}", response_model=OrderRead)
 def get_order_by_id(order_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
