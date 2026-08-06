@@ -79,7 +79,7 @@ const OrderDetailPage = () => {
       <p>Total: ${order.total_amount.toFixed(2)}</p>
       <p>
         {order.shipping_provider === 'GHN' && order.tracking_code ? (
-          <>
+          <span>
             Mã vận đơn GHN:{' '}
             
               href={`https://tracking.ghn.vn/?order_code=${order.tracking_code}`}
@@ -88,9 +88,9 @@ const OrderDetailPage = () => {
             >
               {order.tracking_code}
             </a>
-          </>
+          </span>
         ) : (
-          'Đơn vị vận chuyển: Đội xe ShopHub'
+          <span>Đơn vị vận chuyển: Đội xe ShopHub</span>
         )}
       </p>
       {order.shipping_fee > 0 && <p>Phí ship: {order.shipping_fee.toLocaleString()} VND</p>}
