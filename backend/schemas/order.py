@@ -49,6 +49,7 @@ class OrderSummary(BaseModel):
     created_at: str
     shipping_provider: str
     tracking_code: Optional[str] = None
+    customer_email: Optional[str] = None
 
     class Config:
         from_attributes = True
