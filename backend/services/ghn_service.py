@@ -9,6 +9,12 @@ def _ghn_headers() -> dict:
         "ShopId": str(GHN_SHOP_ID),
     }
 
+def _ghn_headers_no_shop() -> dict:
+    return {
+        "Content-Type": "application/json",
+        "Token": GHN_API_TOKEN,
+    }
+
 def calculate_shipping_fee(
     to_district_id: int,
     to_ward_code: str,
