@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ordersApi } from '../api/ordersApi';
@@ -13,13 +13,46 @@ const CartPage = () => {
   const [shippingMethod, setShippingMethod] = useState('IN_HOUSE');
   const [shippingFee, setShippingFee] = useState(0);
   const [calculatingFee, setCalculatingFee] = useState(false);
+
   const [address, setAddress] = useState({
     to_name: '',
     to_phone: '',
     to_address: '',
-    to_district_id: '',
-    to_ward_code: '',
   });
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
+
+  useEffect(() => {
+    if (shippingMethod === 'GHN' && provinces.length === 0) {
+      shippingApi.getProvinces().then(setProvinces).catch(() => setError('Không tải được danh sách tỉnh/thành.'));
+    }
+  }, [shippingMethod, provinces.length]);
+
+  useEffect(() => {
+    if (!selectedProvince) {
+      setDistricts([]);
+      return;
+    }
+    setSelectedDistrict('');
+    setSelectedWard('');
+    setWards([]);
+    shippingApi.getDistricts(selectedProvince).then(setDistricts).catch(() => setError('Không tải được danh sách quận/huyện.'));
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    if (!selectedDistrict) {
+      setWards([]);
+      return;
+    }
+    setSelectedWard('');
+    shippingApi.getWards(selectedDistrict).then(setWards).catch(() => setError('Không tải được danh sách phường/xã.'));
+  }, [selectedDistrict]);
 
   const handleMethodChange = (value) => {
     setShippingMethod(value);
@@ -32,8 +65,8 @@ const CartPage = () => {
   };
 
   const handleCalculateFee = async () => {
-    if (!address.to_district_id || !address.to_ward_code) {
-      setError('Vui lòng nhập đủ mã quận/huyện và mã phường/xã.');
+    if (!selectedDistrict || !selectedWard) {
+      setError('Vui lòng chọn đầy đủ Tỉnh / Quận-huyện / Phường-xã.');
       return;
     }
     setCalculatingFee(true);
@@ -41,13 +74,13 @@ const CartPage = () => {
     try {
       const weight = totalQuantity * 200;
       const { fee } = await shippingApi.calculateFee({
-        to_district_id: parseInt(address.to_district_id, 10),
-        to_ward_code: address.to_ward_code,
+        to_district_id: parseInt(selectedDistrict, 10),
+        to_ward_code: selectedWard,
         weight,
       });
       setShippingFee(fee);
     } catch (err) {
-      setError('Không tính được phí ship. Kiểm tra lại mã quận/huyện, phường/xã.');
+      setError('Không tính được phí ship. Vui lòng thử lại địa chỉ khác.');
     } finally {
       setCalculatingFee(false);
     }
@@ -57,8 +90,8 @@ const CartPage = () => {
     if (items.length === 0) return;
 
     if (shippingMethod === 'GHN') {
-      if (!address.to_name || !address.to_phone || !address.to_address || shippingFee === 0) {
-        setError('Vui lòng điền địa chỉ và tính phí ship trước khi đặt hàng.');
+      if (!address.to_name || !address.to_phone || !address.to_address || !selectedWard || shippingFee === 0) {
+        setError('Vui lòng điền đầy đủ thông tin và tính phí ship trước khi đặt hàng.');
         return;
       }
     }
@@ -71,7 +104,13 @@ const CartPage = () => {
         items,
         shippingProvider: shippingMethod,
         shippingFee,
-        address,
+        address: {
+          to_name: address.to_name,
+          to_phone: address.to_phone,
+          to_address: address.to_address,
+          to_district_id: selectedDistrict,
+          to_ward_code: selectedWard,
+        },
       });
       clearCart();
       navigate(`/orders/${order.id}`);
@@ -196,7 +235,7 @@ const CartPage = () => {
               />
             </div>
             <div style={{ marginBottom: '8px' }}>
-              <label>Địa chỉ</label>
+              <label>Địa chỉ cụ thể (số nhà, tên đường)</label>
               <input
                 type="text"
                 name="to_address"
@@ -205,25 +244,55 @@ const CartPage = () => {
                 style={{ width: '100%', padding: '8px' }}
               />
             </div>
+
             <div style={{ marginBottom: '8px' }}>
-              <label>Mã quận/huyện (GHN district_id)</label>
-              <input
-                type="number"
-                name="to_district_id"
-                value={address.to_district_id}
-                onChange={handleAddressChange}
+              <label>Tỉnh / Thành phố</label>
+              <select
+                value={selectedProvince}
+                onChange={(e) => setSelectedProvince(e.target.value)}
                 style={{ width: '100%', padding: '8px' }}
-              />
+              >
+                <option value="">-- Chọn tỉnh/thành --</option>
+                {provinces.map((p) => (
+                  <option key={p.ProvinceID} value={p.ProvinceID}>
+                    {p.ProvinceName}
+                  </option>
+                ))}
+              </select>
             </div>
+
             <div style={{ marginBottom: '8px' }}>
-              <label>Mã phường/xã (GHN ward_code)</label>
-              <input
-                type="text"
-                name="to_ward_code"
-                value={address.to_ward_code}
-                onChange={handleAddressChange}
+              <label>Quận / Huyện</label>
+              <select
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                disabled={!selectedProvince}
                 style={{ width: '100%', padding: '8px' }}
-              />
+              >
+                <option value="">-- Chọn quận/huyện --</option>
+                {districts.map((d) => (
+                  <option key={d.DistrictID} value={d.DistrictID}>
+                    {d.DistrictName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '8px' }}>
+              <label>Phường / Xã</label>
+              <select
+                value={selectedWard}
+                onChange={(e) => setSelectedWard(e.target.value)}
+                disabled={!selectedDistrict}
+                style={{ width: '100%', padding: '8px' }}
+              >
+                <option value="">-- Chọn phường/xã --</option>
+                {wards.map((w) => (
+                  <option key={w.WardCode} value={w.WardCode}>
+                    {w.WardName}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button
