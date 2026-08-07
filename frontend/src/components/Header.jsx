@@ -4,6 +4,7 @@ import { useAuth } from '../auth/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { clearToken } from '../auth/token';
 import { clearUserInfo } from '../auth/userInfo';
+
 const Header = () => {
   const { totalQuantity } = useCart();
   const { isAuthenticated, user, role } = useAuth();
@@ -23,11 +24,11 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-  clearToken();
-  clearUserInfo();
-  setMenuOpen(false);
-  navigate('/login');
-};
+    clearToken();
+    clearUserInfo();
+    setMenuOpen(false);
+    navigate('/login');
+  };
 
   return (
     <header
@@ -106,7 +107,7 @@ const Header = () => {
                     </Link>
                   </>
                 )}
-            
+
                 {role === 'Shipper' && (
                   <>
                     <Link
@@ -126,64 +127,14 @@ const Header = () => {
                   </>
                 )}
 
-                    <Link
-                      to="/orders"
-                      onClick={() => setMenuOpen(false)}
-                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
-                    >
-                      Order History
-                    </Link>
-                
-                    <button
-                      onClick={handleLogout}
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        textAlign: 'left',
-                        padding: '10px 16px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#c00',
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-
-                  {role === 'Admin' && (
-                    <>
-                      <Link
-                        to="/admin/orders"
-                        onClick={() => setOpen(false)}
-                        style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
-                      >
-                        All Orders (Admin)
-                      </Link>
-                      <Link
-                        to="/admin/dashboard"
-                        onClick={() => setOpen(false)}
-                        style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
-                      >
-                        Admin Dashboard
-                      </Link>
-                    </>
-                  )}
-                
                 <Link
                   to="/orders"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '10px 16px',
-                    textDecoration: 'none',
-                    color: '#000',
-                    borderBottom: '1px solid #eee',
-                  }}
+                  onClick={() => setMenuOpen(false)}
+                  style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
                 >
                   Order History
                 </Link>
+
                 <button
                   onClick={handleLogout}
                   style={{
