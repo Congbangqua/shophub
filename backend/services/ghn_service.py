@@ -67,6 +67,7 @@ def create_ghn_order(
         "insurance_value": insurance_value,
         "service_type_id": 2,
         "items": items,
+        "required_note": "CHOXEMHANGKHONGTHU",
     }
 
     response = httpx.post(
