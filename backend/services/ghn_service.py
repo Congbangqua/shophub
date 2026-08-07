@@ -9,7 +9,6 @@ def _ghn_headers() -> dict:
         "ShopId": str(GHN_SHOP_ID),
     }
 
-
 def calculate_shipping_fee(
     to_district_id: int,
     to_ward_code: str,
@@ -38,7 +37,6 @@ def calculate_shipping_fee(
 
     data = response.json()
     return float(data["data"]["total"])
-
 
 def create_ghn_order(
     to_name: str,
@@ -81,7 +79,7 @@ def create_ghn_order(
 def get_provinces() -> list:
     response = httpx.get(
         f"{GHN_API_URL}/master-data/province",
-        headers=_ghn_headers(),
+        headers=_ghn_headers_no_shop(),
     )
     if response.status_code != 200:
         raise HTTPException(
@@ -90,12 +88,11 @@ def get_provinces() -> list:
         )
     return response.json()["data"]
 
-
 def get_districts(province_id: int) -> list:
-    response = httpx.get(
+    response = httpx.post(
         f"{GHN_API_URL}/master-data/district",
-        params={"province_id": province_id},
-        headers=_ghn_headers(),
+        json={"province_id": province_id},
+        headers=_ghn_headers_no_shop(),
     )
     if response.status_code != 200:
         raise HTTPException(
@@ -104,12 +101,11 @@ def get_districts(province_id: int) -> list:
         )
     return response.json()["data"]
 
-
 def get_wards(district_id: int) -> list:
-    response = httpx.get(
+    response = httpx.post(
         f"{GHN_API_URL}/master-data/ward",
-        params={"district_id": district_id},
-        headers=_ghn_headers(),
+        json={"district_id": district_id},
+        headers=_ghn_headers_no_shop(),
     )
     if response.status_code != 200:
         raise HTTPException(
