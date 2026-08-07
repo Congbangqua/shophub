@@ -2,6 +2,7 @@ import httpx
 from fastapi import HTTPException, status
 from config import GHN_API_URL, GHN_API_TOKEN, GHN_SHOP_ID
 
+
 def _ghn_headers() -> dict:
     return {
         "Content-Type": "application/json",
@@ -9,11 +10,13 @@ def _ghn_headers() -> dict:
         "ShopId": str(GHN_SHOP_ID),
     }
 
+
 def _ghn_headers_no_shop() -> dict:
     return {
         "Content-Type": "application/json",
         "Token": GHN_API_TOKEN,
     }
+
 
 def calculate_shipping_fee(
     to_district_id: int,
@@ -43,6 +46,7 @@ def calculate_shipping_fee(
 
     data = response.json()
     return float(data["data"]["total"])
+
 
 def create_ghn_order(
     to_name: str,
@@ -82,6 +86,7 @@ def create_ghn_order(
     data = response.json()
     return data["data"]["order_code"]
 
+
 def get_provinces() -> list:
     response = httpx.get(
         f"{GHN_API_URL}/master-data/province",
@@ -93,6 +98,7 @@ def get_provinces() -> list:
             detail=f"GHN province error: {response.text}",
         )
     return response.json()["data"]
+
 
 def get_districts(province_id: int) -> list:
     response = httpx.post(
@@ -106,6 +112,7 @@ def get_districts(province_id: int) -> list:
             detail=f"GHN district error: {response.text}",
         )
     return response.json()["data"]
+
 
 def get_wards(district_id: int) -> list:
     response = httpx.post(
