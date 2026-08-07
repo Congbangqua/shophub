@@ -55,6 +55,7 @@ def create_ghn_order(
     items: list,
     weight: int,
     insurance_value: int = 0,
+    cod_amount: int = 0,
 ) -> str:
     body = {
         "payment_type_id": 2,
@@ -68,6 +69,7 @@ def create_ghn_order(
         "service_type_id": 2,
         "items": items,
         "required_note": "CHOXEMHANGKHONGTHU",
+        "cod_amount": cod_amount,
     }
 
     response = httpx.post(
