@@ -77,3 +77,43 @@ def create_ghn_order(
 
     data = response.json()
     return data["data"]["order_code"]
+
+def get_provinces() -> list:
+    response = httpx.get(
+        f"{GHN_API_URL}/master-data/province",
+        headers=_ghn_headers(),
+    )
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"GHN province error: {response.text}",
+        )
+    return response.json()["data"]
+
+
+def get_districts(province_id: int) -> list:
+    response = httpx.get(
+        f"{GHN_API_URL}/master-data/district",
+        params={"province_id": province_id},
+        headers=_ghn_headers(),
+    )
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"GHN district error: {response.text}",
+        )
+    return response.json()["data"]
+
+
+def get_wards(district_id: int) -> list:
+    response = httpx.get(
+        f"{GHN_API_URL}/master-data/ward",
+        params={"district_id": district_id},
+        headers=_ghn_headers(),
+    )
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"GHN ward error: {response.text}",
+        )
+    return response.json()["data"]
