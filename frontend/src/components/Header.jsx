@@ -89,67 +89,81 @@ const Header = () => {
                 }}
               >
                 {role === 'Admin' && (
-                <Link
-                  to="/admin/dashboard"
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '10px 16px',
-                    textDecoration: 'none',
-                    color: '#000',
-                    borderBottom: '1px solid #eee',
-                  }}
-                >
-                  Admin Dashboard
-                </Link>
-              )}
+                  <>
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                    >
+                      Admin Dashboard
+                    </Link>
+                    <Link
+                      to="/admin/orders"
+                      onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                    >
+                      All Orders (Admin)
+                    </Link>
+                  </>
+                )}
+            
                 {role === 'Shipper' && (
-                <Link
-                  to="/shipper/dashboard"
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '10px 16px',
-                    textDecoration: 'none',
-                    color: '#000',
-                    borderBottom: '1px solid #eee',
-                  }}
-                >
-                  Shipper Dashboard
-                </Link>
-              )}
+                  <>
+                    <Link
+                      to="/shipper/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                    >
+                      Shipper Dashboard
+                    </Link>
+                    <Link
+                      to="/shipper/history"
+                      onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                    >
+                      Delivery History
+                    </Link>
+                  </>
+                )}
 
-                {role === 'Shipper' && (
-              <>
-                <Link
-                  to="/shipper/dashboard"
-                  onClick={() => setMenuOpen(false)}
-                  style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
-                >
-                  Shipper Dashboard
-                </Link>
-                <Link
-                  to="/shipper/history"
-                  onClick={() => setMenuOpen(false)}
-                  style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
-                >
-                  Delivery History
-                </Link>
-              </>
-            )}
+                    <Link
+                      to="/orders"
+                      onClick={() => setMenuOpen(false)}
+                      style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
+                    >
+                      Order History
+                    </Link>
+                
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '10px 16px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#c00',
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
 
                   {role === 'Admin' && (
                     <>
                       <Link
                         to="/admin/orders"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={() => setOpen(false)}
                         style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
                       >
                         All Orders (Admin)
                       </Link>
                       <Link
                         to="/admin/dashboard"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={() => setOpen(false)}
                         style={{ display: 'block', padding: '10px 16px', textDecoration: 'none', color: '#000', borderBottom: '1px solid #eee' }}
                       >
                         Admin Dashboard
@@ -159,7 +173,7 @@ const Header = () => {
                 
                 <Link
                   to="/orders"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => setOpen(false)}
                   style={{
                     display: 'block',
                     padding: '10px 16px',
