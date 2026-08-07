@@ -10,13 +10,11 @@ def _ghn_headers() -> dict:
         "ShopId": str(GHN_SHOP_ID),
     }
 
-
 def _ghn_headers_no_shop() -> dict:
     return {
         "Content-Type": "application/json",
         "Token": GHN_API_TOKEN,
     }
-
 
 def calculate_shipping_fee(
     to_district_id: int,
@@ -89,7 +87,7 @@ def create_ghn_order(
 
 def get_provinces() -> list:
     response = httpx.get(
-        f"{GHN_API_URL}/v2/master-data/province",
+        f"{GHN_API_URL}/master-data/province",
         headers=_ghn_headers_no_shop(),
     )
     if response.status_code != 200:
@@ -102,8 +100,8 @@ def get_provinces() -> list:
 
 def get_districts(province_id: int) -> list:
     response = httpx.get(
-        f"{GHN_API_URL}/v2/master-data/district",
-        params={"province_id": province_id}, # GHN khuyến khích truyền dạng query params với GET cho dữ liệu master
+        f"{GHN_API_URL}/master-data/district",
+        params={"province_id": province_id},
         headers=_ghn_headers_no_shop(),
     )
     if response.status_code != 200:
@@ -116,7 +114,7 @@ def get_districts(province_id: int) -> list:
 
 def get_wards(district_id: int) -> list:
     response = httpx.get(
-        f"{GHN_API_URL}/v2/master-data/ward",
+        f"{GHN_API_URL}/master-data/ward",
         params={"district_id": district_id},
         headers=_ghn_headers_no_shop(),
     )
